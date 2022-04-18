@@ -33,7 +33,7 @@ class Vue():
         for (text, value) in formes.items():
             Radiobutton(self.cadre_formes, text=text, variable=self.v,
                         value=value, indicator=0,
-                        background="light blue").pack(side=LEFT)
+                        background="green").pack(side=LEFT)
         self.v.set("Rectangle")
         self.cadre_formes.pack(side=LEFT)
         #
