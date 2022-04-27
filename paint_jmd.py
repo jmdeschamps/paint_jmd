@@ -18,10 +18,23 @@ class Vue():
     def creer_cadre_paint(self):
         self.cadre_paint=Frame(self.root)
         self.canevas=Canvas(self.cadre_paint,width=600,height=600,bg="white")
+        self.canevas.create_roundrect=self.create_roundrect
+
+        self.canevas.create_roundrect()
+
         self.canevas.bind("<Button-1>",self.debuter_selection)
         self.canevas.bind("<ButtonRelease>",self.terminer_selection)
         self.canevas.pack()
         self.cadre_paint.pack()
+
+    def create_roundrect(self):
+
+
+        self.canevas.create_polygon(100,100,200,100,300,100,
+                                    300,150,300,200,
+                                    200,200,100,200,100,150,
+                                    fill="",outline="blue",width=5,
+                                    smooth=1,splinesteps=3)
 
     def creer_cadre_outil(self):
         self.cadre_outil=Frame(self.root)
@@ -29,7 +42,8 @@ class Vue():
         self.cadre_formes=Frame(self.cadre_outil)
         self.v = StringVar()
         formes = {"Rectangle": "Rectangle",
-                  "Oval": "Oval"}
+                  "Oval": "Oval",
+                  "Ligne":"Ligne"}
         for (text, value) in formes.items():
             Radiobutton(self.cadre_formes, text=text, variable=self.v,
                         value=value, indicator=0,
@@ -69,6 +83,8 @@ class Vue():
                 self.canevas.create_rectangle(j.debut, j.fin,outline=j.couleur,width=j.largeur,activedash=((7,1,1,1)))
             elif cle=="Oval":
                 self.canevas.create_oval(j.debut, j.fin,outline=j.couleur,width=j.largeur,activedash=((7,1,1,1)))
+            elif cle=="Ligne":
+                self.canevas.create_line(j.debut, j.fin,fill=j.couleur,width=j.largeur,activedash=((7,1,1,1)))
 
     def effacer_tout(self):
         self.canevas.delete(ALL)
@@ -87,9 +103,12 @@ class Modele():
     def __init__(self,parent):
         self.parent=parent
         self.createur_formes={"Rectangle":self.creer_rectangle,
-                     "Oval":self.creer_oval}
+                     "Oval":self.creer_oval,
+                     "Ligne":self.creer_ligne}
+
         self.formes={"Rectangle":[],
-                     "Oval":[]}
+                     "Oval":[],
+                     "Ligne":[]}
 
     def creer_forme(self,forme,origine,fin,couleur,largeur):
         obj=self.createur_formes[forme](origine,fin,couleur,largeur)
@@ -102,6 +121,10 @@ class Modele():
 
     def creer_oval(self,origine,fin,couleur,largeur):
         obj=Oval(self,origine,fin,couleur,largeur)
+        return obj
+
+    def creer_ligne(self,origine,fin,couleur,largeur):
+        obj=Ligne(self,origine,fin,couleur,largeur)
         return obj
 
 class Forme():
@@ -117,6 +140,10 @@ class Rectangle(Forme):
         Forme.__init__(self,parent,debut,fin,couleur,largeur)
 
 class Oval(Forme):
+    def __init__(self, parent, debut, fin,couleur,largeur):
+        Forme.__init__(self, parent, debut, fin,couleur,largeur)
+
+class Ligne(Forme):
     def __init__(self, parent, debut, fin,couleur,largeur):
         Forme.__init__(self, parent, debut, fin,couleur,largeur)
 
